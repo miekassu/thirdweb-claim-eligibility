@@ -1,7 +1,9 @@
 import {
   useActiveClaimCondition,
   useActiveClaimConditionForWallet,
+  useAddress,
   useClaimedNFTSupply,
+  useClaimIneligibilityReasons,
   useContract,
   useContractMetadata,
   useNFT,
@@ -13,14 +15,14 @@ import { useMemo } from 'react';
 import { ERC1155ClaimButton } from './components/Erc1155ClaimButton';
 import { HeadingImage } from './components/HeadingImage';
 
-const urlParams = new URL(window.location.toString()).searchParams;
-const contractAddress = urlParams.get('contractAddress') || '';
-const tokenId = urlParams.get('tokenId') || '0';
+const contractAddress = '0x2180E2c1F0f81227ed1e8694C252B01232f1eF8C';
+const tokenId = '0';
 
 export default function Home() {
   const contractQuery = useContract(contractAddress);
   const contractMetadata = useContractMetadata(contractQuery.contract);
   const nft = useNFT(contractQuery.contract, tokenId);
+  const walletAddress = useAddress()
 
   const claimedSupply = useTotalCirculatingSupply(
     contractQuery.contract,
@@ -31,6 +33,13 @@ export default function Home() {
     contractQuery.contract,
     tokenId,
   );
+
+  const { data, isLoading: useClaimIneligibilityReasonsLoading, error } = useClaimIneligibilityReasons(contractQuery.contract, {
+    walletAddress: walletAddress!,
+    quantity: 1,
+  }, tokenId)
+
+  console.log('data, useClaimIneligibilityReasonsLoading, error', data, useClaimIneligibilityReasonsLoading, error)
 
   const totalAvailableSupply = useMemo(() => {
     try {

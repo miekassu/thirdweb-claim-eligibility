@@ -289,7 +289,7 @@ export const ERC1155ClaimButton: React.FC<ClaimButtonProps> = ({ contract, token
         {address ? (
           <Web3Button
             contractAddress={contract?.getAddress() || ''}
-            action={(cntr) => cntr.erc721.claim(quantity)}
+            action={(cntr) => cntr.erc1155.claim(tokenId, quantity)}
             isDisabled={!canClaim || buttonLoading}
             onError={(err) => {
               console.error(err);
